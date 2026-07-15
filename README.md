@@ -60,7 +60,11 @@ cd Live-Wallpaper-Manager
 
 mkdir -p "$HOME/Pictures/Live Wallpaper"
 
-bash install.sh
+mkdir -p "$HOME/.config/eww"
+
+cp -r eww/* "$HOME/.config/eww/"
+
+chmod +x "$HOME/.config/eww/scripts/"*.sh
 ```
 
 The installer will automatically:
