@@ -52,6 +52,23 @@ cd Live-Wallpaper-Manager
 bash install.sh
 ```
 
+## 🚀 Launch
+
+After installation, start the manager with:
+
+```bash
+eww kill
+eww daemon
+eww open wallpaper-manager
+eww open wallpaper-trigger
+```
+
+If it's already running and you've modified the configuration:
+
+```bash
+eww reload
+```
+
 Script sẽ copy cấu hình vào `~/.config/eww`, tạo thư mục
 `~/Pictures/Live Wallpaper`, cài entry Rofi, và mở panel lần đầu.
 
