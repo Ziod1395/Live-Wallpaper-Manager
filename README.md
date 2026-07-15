@@ -143,29 +143,25 @@ See **[`WAYBAR.md`](WAYBAR.md)** for instructions on adding the **LW** launcher 
 
 ---
 
-# 📁 Project Structure
+## 📁 Project Structure
 
 ```text
-live-wallpaper-manager/
-├── install.sh                    # Installation script
-├── WAYBAR.md                     # Waybar integration guide
-├── LICENSE
-└── eww/
-    ├── eww.yuck                  # Eww UI
-    ├── eww.scss                  # Catppuccin Mocha theme
-    ├── live-wallpaper-manager.desktop
-    ├── README.md                 # Detailed setup guide
-    └── scripts/
-        ├── wallpaper_list.sh     # Scan wallpapers -> JSON
-        ├── apply_wallpaper.sh    # Apply wallpaper
-        ├── stop_wallpaper.sh     # Stop wallpaper
-        ├── start_wallpaper.sh    # Resume previous wallpaper
-        ├── toggle_wallpaper.sh   # Start / Stop toggle
-        ├── refresh.sh            # Refresh wallpapers
-        └── thumbnail.sh          # Generate thumbnails
+eww/
+├── install.sh                         # Installation script
+├── README.md                          # Detailed setup guide
+├── WAYBAR.md                          # Waybar integration guide
+├── eww.yuck                           # Eww user interface
+├── eww.scss                           # Catppuccin Mocha theme
+├── live-wallpaper-manager.desktop     # Desktop launcher
+└── scripts/
+    ├── apply_wallpaper.sh             # Apply selected wallpaper
+    ├── refresh.sh                     # Refresh wallpaper list and generate thumbnails
+    ├── start_wallpaper.sh             # Resume the last wallpaper
+    ├── stop_wallpaper.sh              # Stop the current wallpaper
+    ├── thumbnail.sh                   # Generate thumbnails using ffmpeg
+    ├── toggle_wallpaper.sh            # Toggle Start / Stop wallpaper
+    └── wallpaper_list.sh              # Scan wallpapers and generate JSON data
 ```
-
----
 
 # 📂 Default Directories
 
