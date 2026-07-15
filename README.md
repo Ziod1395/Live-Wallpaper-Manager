@@ -1,13 +1,12 @@
-[README.md](https://github.com/user-attachments/files/30036913/README.md)
 # Live Wallpaper Manager
 
-Trình quản lý live wallpaper cho **Hyprland**, giao diện dựng bằng
-**Eww**, phát video nền bằng **mpvpaper**, theme **Catppuccin Mocha**
-lấy cảm hứng từ Windows 11 (Mica/Fluent).
+A modern **Live Wallpaper Manager** for **Hyprland**, built with **Eww** and powered by **mpvpaper**. It features a **Catppuccin Mocha** theme inspired by the Windows 11 Fluent (Mica) design language.
 
 ![theme](https://img.shields.io/badge/theme-Catppuccin%20Mocha-b4befe)
 ![wm](https://img.shields.io/badge/WM-Hyprland-33ccff)
 ![license](https://img.shields.io/badge/license-MIT-green)
+
+---
 
 ## 🎥 Demo
 
@@ -15,47 +14,80 @@ lấy cảm hứng từ Windows 11 (Mica/Fluent).
 
 https://www.tiktok.com/@ziodenms/video/7662639226181225746
 
-## Tính năng
+---
 
-- Tự động quét toàn bộ video (`.mp4 .webm .mkv .mov`) trong thư mục
-  wallpaper — không hardcode danh sách.
-- Tự sinh thumbnail bằng `ffmpeg` nếu chưa có, cache tại
-  `~/.cache/livewallpaper/thumbs`.
-- Click 1 nút là đổi wallpaper ngay (`pkill` + `mpvpaper` qua
-  `hyprctl dispatch exec` để tiến trình không bị dọn theo session,
-  tự động thử lại nếu lần đầu bị compositor từ chối).
-- Thanh tìm kiếm lọc theo tên video real-time.
-- Hiển thị wallpaper đang dùng.
-- Bộ chọn độ phân giải phát wallpaper: **480p / 720p / 1080p / 2K / 4K**
-  (dùng bộ lọc `scale` của mpv để giảm tải CPU/GPU khi cần).
-- Nút toggle **Start/Stop Wallpaper** động — tự đổi nhãn theo trạng
-  thái, bấm Start sẽ phát lại đúng video + độ phân giải vừa dừng.
-- Nút Refresh.
-- Icon shortcut "LW" (dùng độc lập hoặc gắn vào Waybar).
-- Entry `.desktop` để tìm được qua Rofi/launcher.
-- Bo góc 20px + blur nền qua Hyprland layer rules.
+## ✨ Features
 
-## Cài đặt
+- Automatically scans all supported video files (`.mp4`, `.webm`, `.mkv`, `.mov`) inside the wallpaper directory — no hardcoded list required.
+- Automatically generates thumbnails using **ffmpeg** and stores them in `~/.cache/livewallpaper/thumbs`.
+- Change wallpapers instantly with a single click using **mpvpaper** (`pkill` + `hyprctl dispatch exec`). Automatically retries if the compositor rejects the first launch.
+- Real-time wallpaper search.
+- Displays the currently active wallpaper.
+- Built-in wallpaper playback resolution selector:
+  - **480p**
+  - **720p**
+  - **1080p**
+  - **2K**
+  - **4K**
+- Uses mpv's `scale` filter to reduce CPU/GPU usage when lower resolutions are selected.
+- Dynamic **Start / Stop Wallpaper** button.
+  - Automatically changes its label depending on the current state.
+  - Pressing **Start** resumes the last wallpaper with the previously selected resolution.
+- Refresh button for rescanning wallpapers.
+- "LW" shortcut icon (can be used standalone or integrated into Waybar).
+- Desktop launcher (`.desktop`) for Rofi, Wofi, or other application launchers.
+- Rounded 20px corners with Hyprland blur support via layer rules.
 
-### Phụ thuộc
+---
+
+# 🚀 Installation
+
+## Dependencies
 
 ```bash
 sudo pacman -S eww jq ffmpeg
 yay -S mpvpaper
 ```
 
-### Cài nhanh
+## Quick Installation
 
 ```bash
 cd ~/Downloads
+
 git clone https://github.com/Ziod1395/Live-Wallpaper-Manager.git
+
 cd Live-Wallpaper-Manager
+
+mkdir -p "$HOME/Pictures/Live Wallpaper"
+
 bash install.sh
 ```
 
-## 🚀 Launch
+The installer will automatically:
 
-After installation, start the manager with:
+- Copy the configuration to `~/.config/eww`
+- Create the default wallpaper directory:
+
+```
+~/Pictures/Live Wallpaper
+```
+
+- Install the desktop launcher
+- Launch the wallpaper manager for the first time
+
+Copy your video wallpapers (`.mp4`, `.webm`, `.mkv`, `.mov`) into:
+
+```
+~/Pictures/Live Wallpaper
+```
+
+Then click **Refresh** inside the manager.
+
+---
+
+## ▶️ Launch
+
+Start the manager manually:
 
 ```bash
 eww kill
@@ -64,72 +96,88 @@ eww open wallpaper-manager
 eww open wallpaper-trigger
 ```
 
-If it's already running and you've modified the configuration:
+If Eww is already running and you've modified the configuration:
 
 ```bash
 eww reload
 ```
 
-Script sẽ copy cấu hình vào `~/.config/eww`, tạo thư mục
-`~/Pictures/Live Wallpaper`, cài entry Rofi, và mở panel lần đầu.
+---
 
-Bỏ file video (`.mp4 .webm .mkv .mov`) vào `~/Pictures/Live Wallpaper`
-rồi bấm **Refresh** trên panel.
+## ⚙️ Hyprland Configuration
 
-### Cấu hình Hyprland (blur + bo góc + autostart)
+For complete Hyprland setup (blur, rounded corners, autostart, and layer rules), see:
 
-Xem chi tiết đầy đủ trong [`eww/README.md`](eww/README.md) — bao gồm
-cả cú pháp `layerrule` cho Hyprland cũ **và** mới (≥ 0.53, đã đổi cú
-pháp sang dạng `blur on, match:namespace ...`).
+**[`eww/README.md`](eww/README.md)**
 
-### Tích hợp vào Waybar (tuỳ chọn)
+The guide includes configuration examples for both:
 
-Xem [`WAYBAR.md`](WAYBAR.md) để thêm icon "LW" trực tiếp vào thanh
-Waybar thay vì dùng cửa sổ Eww nổi riêng.
+- Older Hyprland versions
+- Hyprland **0.53+** (`blur on, match:namespace ...` syntax)
 
-## Cấu trúc project
+---
 
-```
+## 🖥 Waybar Integration (Optional)
+
+See **[`WAYBAR.md`](WAYBAR.md)** for instructions on adding the **LW** launcher directly to Waybar.
+
+---
+
+# 📁 Project Structure
+
+```text
 live-wallpaper-manager/
-├── install.sh              # script cài đặt nhanh
-├── WAYBAR.md                # hướng dẫn tích hợp Waybar
+├── install.sh                    # Installation script
+├── WAYBAR.md                     # Waybar integration guide
 ├── LICENSE
 └── eww/
-    ├── eww.yuck              # giao diện (Eww/yuck)
-    ├── eww.scss              # theme Catppuccin Mocha + Windows 11
+    ├── eww.yuck                  # Eww UI
+    ├── eww.scss                  # Catppuccin Mocha theme
     ├── live-wallpaper-manager.desktop
-    ├── README.md              # hướng dẫn cài đặt & cấu hình chi tiết
+    ├── README.md                 # Detailed setup guide
     └── scripts/
-        ├── wallpaper_list.sh   # quét thư mục -> JSON
-        ├── apply_wallpaper.sh  # đổi wallpaper qua mpvpaper
-        ├── stop_wallpaper.sh   # dừng wallpaper
-        ├── start_wallpaper.sh  # phát lại wallpaper vừa dừng
-        ├── toggle_wallpaper.sh # gộp Start/Stop cho 1 nút duy nhất
-        ├── refresh.sh          # quét lại + sinh thumbnail thiếu
-        └── thumbnail.sh        # sinh thumbnail bằng ffmpeg
+        ├── wallpaper_list.sh     # Scan wallpapers -> JSON
+        ├── apply_wallpaper.sh    # Apply wallpaper
+        ├── stop_wallpaper.sh     # Stop wallpaper
+        ├── start_wallpaper.sh    # Resume previous wallpaper
+        ├── toggle_wallpaper.sh   # Start / Stop toggle
+        ├── refresh.sh            # Refresh wallpapers
+        └── thumbnail.sh          # Generate thumbnails
 ```
 
-## Thư mục mặc định
+---
 
-| Việc gì | Ở đâu |
-|---|---|
-| Video wallpaper | `~/Pictures/Live Wallpaper` |
+# 📂 Default Directories
+
+| Item | Location |
+|------|----------|
+| Video wallpapers | `~/Pictures/Live Wallpaper` |
 | Thumbnail cache | `~/.cache/livewallpaper/thumbs` |
-| Wallpaper hiện tại | `~/.cache/livewallpaper/current` |
-| Wallpaper để "Start" lại | `~/.cache/livewallpaper/last` |
-| Độ phân giải đã chọn | `~/.cache/livewallpaper/resolution` |
+| Current wallpaper | `~/.cache/livewallpaper/current` |
+| Last wallpaper | `~/.cache/livewallpaper/last` |
+| Selected resolution | `~/.cache/livewallpaper/resolution` |
 
-## Gỡ cài đặt
+---
+
+# 🗑 Uninstall
 
 ```bash
 eww kill
+
 pkill -9 -f mpvpaper
-rm -rf ~/.config/eww ~/.cache/livewallpaper
+
+rm -rf ~/.config/eww
+
+rm -rf ~/.cache/livewallpaper
+
 rm -f ~/.local/share/applications/live-wallpaper-manager.desktop
 ```
-(không xóa `~/Pictures/Live Wallpaper` nếu muốn giữ lại video)
 
-## License
+> **Note:** Your videos inside `~/Pictures/Live Wallpaper` will **not** be removed.
+
+---
+
+# 📄 License
 
 MIT License
 
