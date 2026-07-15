@@ -9,6 +9,12 @@ lấy cảm hứng từ Windows 11 (Mica/Fluent).
 ![wm](https://img.shields.io/badge/WM-Hyprland-33ccff)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
+## 🎥 Demo
+
+▶️ **Watch the full demo on TikTok**
+
+https://www.tiktok.com/@ziodenms/video/7662639226181225746
+
 ## Tính năng
 
 - Tự động quét toàn bộ video (`.mp4 .webm .mkv .mov`) trong thư mục
