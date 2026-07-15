@@ -47,6 +47,7 @@ yay -S mpvpaper
 ### Cài nhanh
 
 ```bash
+cd ~/Downloads
 git clone https://github.com/Ziod1395/Live-Wallpaper-Manager.git
 cd Live-Wallpaper-Manager
 bash install.sh
