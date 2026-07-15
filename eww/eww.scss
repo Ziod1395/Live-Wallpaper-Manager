@@ -1,0 +1,354 @@
+// ============================================================
+// Live Wallpaper Manager - Theme
+// Phong cách: Windows 11 (Fluent/Mica) + Catppuccin Mocha
+// ============================================================
+
+// -------------------- BẢNG MÀU CATPPUCCIN MOCHA --------------------
+$base:      #1e1e2e;
+$mantle:    #181825;
+$crust:     #11111b;
+$surface0:  #313244;
+$surface1:  #45475a;
+$surface2:  #585b70;
+$overlay0:  #6c7086;
+$text:      #cdd6f4;
+$subtext0:  #a6adc8;
+$subtext1:  #bac2de;
+$blue:      #89b4fa;
+$lavender:  #b4befe;
+$mauve:     #cba6f7;
+$pink:      #f5c2e7;
+$red:       #f38ba8;
+$green:     #a6e3a1;
+$teal:      #94e2d5;
+$peach:     #fab387;
+$yellow:    #f9e2af;
+
+// -------------------- BIẾN CHUNG --------------------
+$radius-xl: 20px;
+$radius-lg: 16px;
+$radius-md: 12px;
+$radius-sm: 8px;
+$transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+// Reset có chọn lọc thay vì "all: unset" (quá mạnh tay, từng gây ra lỗi
+// ô nhập liệu bị mất màu chữ / gõ không thấy chữ trên 1 số bản GTK).
+* {
+    font-family: "JetBrainsMono Nerd Font", "Inter", sans-serif;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background-image: none;
+    outline: none;
+}
+
+// -------------------- CỬA SỔ GTK GỐC --------------------
+// Bắt buộc phải có: nếu không, window gốc sẽ có nền mặc định không trong
+// suốt, che mất phần góc bo tròn của .main-window bên trong (khiến panel
+// nhìn như hình chữ nhật vuông góc dù .main-window đã set border-radius).
+window {
+    background-color: transparent;
+}
+
+// -------------------- CỬA SỔ CHÍNH --------------------
+// Mica/Acrylic của Windows 11 = nền bán trong suốt + blur nền thật
+// sự (do compositor Hyprland xử lý qua windowrule "blur", xem README).
+.main-window {
+    background-color: rgba(30, 30, 46, 0.72); // $base với alpha
+    border-radius: $radius-xl;
+    border: 1px solid rgba(180, 190, 254, 0.15); // viền lavender mờ
+    padding: 22px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(203, 166, 247, 0.06) inset;
+}
+
+// -------------------- TIÊU ĐỀ --------------------
+.title-bar {
+    margin-bottom: 4px;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: 800;
+    color: $text;
+    text-shadow: 0 0 18px rgba(180, 190, 254, 0.25);
+}
+
+// Nút tắt/đóng panel (kiểu nút X của Windows 11)
+.close-btn {
+    font-size: 13px;
+    font-weight: 700;
+    color: $subtext0;
+    min-width: 30px;
+    min-height: 30px;
+    border-radius: $radius-sm;
+    transition: $transition;
+}
+
+.close-btn:hover {
+    background-color: $red;
+    color: $crust;
+    box-shadow: 0 0 14px rgba(243, 139, 168, 0.5);
+}
+
+// -------------------- THANH TÌM KIẾM --------------------
+.search-bar {
+    background-color: rgba(49, 50, 68, 0.65); // surface0
+    border: 1px solid rgba(166, 173, 200, 0.12);
+    border-radius: $radius-lg;
+    padding: 10px 16px;
+    min-height: 22px;
+    transition: $transition;
+}
+
+.search-bar:hover {
+    border: 1px solid rgba(137, 180, 250, 0.35); // blue
+    background-color: rgba(49, 50, 68, 0.85);
+}
+
+.search-icon {
+    color: $subtext0;
+    font-size: 15px;
+    min-width: 18px;
+}
+
+// Quan trọng: chỉ định màu chữ trực tiếp trên phần tử "entry" (GTK), không
+// chỉ dựa vào class ngoài — vì "* { all: unset; }" ở đầu file có thể xoá
+// mất màu chữ mặc định khiến ô nhập liệu bị "vô hình" (gõ không thấy chữ).
+entry,
+entry.search-input,
+.search-input {
+    color: $text;
+    caret-color: $lavender;
+    font-size: 14px;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    min-height: 22px;
+}
+
+// Màu chữ gợi ý (placeholder) khi ô trống, để phân biệt với chữ thật
+entry placeholder,
+.search-input placeholder {
+    color: $overlay0;
+}
+
+// Màu chữ khi bôi đen chọn văn bản trong ô search
+entry selection,
+.search-input selection {
+    background-color: rgba(137, 180, 250, 0.35);
+    color: $text;
+}
+
+// -------------------- BỘ CHỌN ĐỘ PHÂN GIẢI --------------------
+.resolution-selector {
+    padding: 2px 2px 6px 2px;
+}
+
+.resolution-label {
+    color: $subtext0;
+    font-size: 12px;
+    margin-right: 2px;
+}
+
+.res-btn {
+    background-color: rgba(69, 71, 90, 0.5); // surface1
+    color: $subtext0;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: $transition;
+}
+
+.res-btn:hover {
+    background-color: rgba(137, 180, 250, 0.2);
+    color: $blue;
+}
+
+.res-btn-active {
+    background: linear-gradient(135deg, $blue, $mauve);
+    color: $crust;
+    border: 1px solid transparent;
+}
+
+.res-btn-active:hover {
+    background: linear-gradient(135deg, $lavender, $pink);
+    color: $crust;
+}
+
+// -------------------- LƯỚI WALLPAPER --------------------
+.grid-wrap {
+    padding: 4px 2px;
+}
+
+.wallpaper-card {
+    background-color: rgba(49, 50, 68, 0.55); // surface0
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: $radius-lg;
+    padding: 10px;
+    transition: $transition;
+}
+
+.wallpaper-card:hover {
+    background-color: rgba(69, 71, 90, 0.75); // surface1
+    border: 1px solid rgba(180, 190, 254, 0.45); // lavender glow
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        0 0 22px rgba(137, 180, 250, 0.15);
+}
+
+.thumb-btn {
+    border-radius: $radius-md;
+}
+
+.thumb {
+    border-radius: $radius-md;
+    transition: $transition;
+}
+
+.thumb-btn:hover .thumb {
+    opacity: 0.9;
+}
+
+.wp-name {
+    color: $text;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.apply-btn {
+    background: linear-gradient(135deg, $blue, $mauve);
+    color: $crust;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 999px; // pill giống Windows 11
+    transition: $transition;
+}
+
+.apply-btn:hover {
+    background: linear-gradient(135deg, $lavender, $pink);
+    box-shadow: 0 0 16px rgba(180, 190, 254, 0.5);
+}
+
+// -------------------- CURRENT WALLPAPER --------------------
+.current-bar {
+    background-color: rgba(24, 24, 37, 0.6); // mantle
+    border: 1px solid rgba(166, 227, 161, 0.15);
+    border-radius: $radius-md;
+    padding: 10px 16px;
+}
+
+.current-dot {
+    color: $green;
+    font-size: 10px;
+    text-shadow: 0 0 10px rgba(166, 227, 161, 0.8);
+}
+
+.current-label {
+    color: $subtext0;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.current-name {
+    color: $teal;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+// -------------------- THANH NÚT HÀNH ĐỘNG --------------------
+.action-bar {
+    margin-top: 4px;
+}
+
+.btn {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 999px;
+    transition: $transition;
+}
+
+.btn-secondary {
+    background-color: rgba(88, 91, 112, 0.55); // surface2
+    color: $text;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(137, 180, 250, 0.25);
+    border: 1px solid rgba(137, 180, 250, 0.5);
+    color: $blue;
+}
+
+.btn-danger {
+    background-color: rgba(243, 139, 168, 0.15); // red
+    color: $red;
+    border: 1px solid rgba(243, 139, 168, 0.3);
+}
+
+.btn-danger:hover {
+    background-color: rgba(243, 139, 168, 0.9);
+    color: $crust;
+    box-shadow: 0 0 16px rgba(243, 139, 168, 0.5);
+}
+
+.btn-start {
+    background-color: rgba(166, 227, 161, 0.15); // green
+    color: $green;
+    border: 1px solid rgba(166, 227, 161, 0.3);
+}
+
+.btn-start:hover {
+    background-color: rgba(166, 227, 161, 0.9);
+    color: $crust;
+    box-shadow: 0 0 16px rgba(166, 227, 161, 0.5);
+}
+
+// -------------------- NÚT SHORTCUT (TRIGGER ICON) --------------------
+// Giống icon trạng thái trên taskbar: hộp tối, bo góc, icon canh giữa.
+.trigger-icon {
+    background-color: rgba(17, 17, 27, 0.85); // crust
+    border: 1px solid rgba(180, 190, 254, 0.15);
+    border-radius: $radius-sm;
+    min-width: 40px;
+    min-height: 28px;
+    transition: $transition;
+}
+
+.trigger-icon:hover {
+    background-color: rgba(49, 50, 68, 0.95); // surface0
+    border: 1px solid rgba(137, 180, 250, 0.5); // blue glow
+    box-shadow: 0 0 14px rgba(137, 180, 250, 0.35);
+}
+
+.trigger-glyph {
+    color: $blue;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.trigger-icon:hover .trigger-glyph {
+    color: $lavender;
+}
+
+// -------------------- SCROLLBAR --------------------
+scrollbar {
+    background-color: transparent;
+}
+
+scrollbar slider {
+    background-color: rgba(180, 190, 254, 0.35);
+    border-radius: 999px;
+    min-width: 6px;
+}
+
+scrollbar slider:hover {
+    background-color: rgba(180, 190, 254, 0.6);
+}
