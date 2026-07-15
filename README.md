@@ -101,7 +101,23 @@ If Eww is already running and you've modified the configuration:
 ```bash
 eww reload
 ```
+## ⏹ Stop
 
+To completely stop the Live Wallpaper Manager:
+
+```bash
+eww close wallpaper-manager
+eww close wallpaper-trigger
+eww kill
+pkill -f mpvpaper
+```
+
+This will:
+
+- Close the wallpaper manager window
+- Close the wallpaper trigger widget
+- Stop the Eww daemon
+- Stop the current live wallpaper (`mpvpaper`)
 ---
 
 ## ⚙️ Hyprland Configuration
