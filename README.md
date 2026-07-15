@@ -177,6 +177,22 @@ rm -f ~/.local/share/applications/live-wallpaper-manager.desktop
 
 ---
 
+# 🤝 Contributing
+
+Contributions are welcome!
+
+If you find a bug, have a feature request, or would like to improve the project, feel free to:
+
+- 🐞 Open an Issue
+- 💡 Suggest new features
+- 🔧 Submit a Pull Request
+
+Please make sure your changes are well-tested and follow the existing project structure.
+
+Thank you for helping improve **Live Wallpaper Manager**!
+
+---
+
 # 📄 License
 
 MIT License
