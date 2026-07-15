@@ -1,0 +1,222 @@
+;; ============================================================
+;; Live Wallpaper Manager - Eww UI (Hyprland + Catppuccin Mocha)
+;; ============================================================
+;; Yêu cầu:
+;;   - eww >= 0.4 (hỗ trợ "for" loop + hàm jq() trong simplexpr)
+;;   - jq, ffmpeg, mpvpaper đã cài đặt
+;; ============================================================
+
+;; -------------------- BIẾN DỮ LIỆU --------------------
+
+;; Danh sách wallpaper dạng JSON, tự quét lại mỗi 30s và mỗi khi
+;; nhấn nút Refresh (refresh.sh sẽ "eww update" biến này ngay lập tức)
+(defpoll wallpapers
+    :interval "30s"
+    :initial "[]"
+    "scripts/wallpaper_list.sh")
+
+;; Tên wallpaper đang được áp dụng (đọc từ ~/.cache/livewallpaper/current)
+(defpoll current_wallpaper
+    :interval "2s"
+    :initial "Không có"
+    "bash -c '[ -f \"$HOME/.cache/livewallpaper/current\" ] && basename \"$(cat \"$HOME/.cache/livewallpaper/current\")\" | sed \"s/\\.[^.]*$//\" || echo \"Không có\"'")
+
+;; Trạng thái mpvpaper đang chạy hay không, dùng để đổi nhãn nút
+;; Stop Wallpaper <-> Start Wallpaper
+(defpoll wallpaper_running
+    :interval "2s"
+    :initial "false"
+    "bash -c 'pgrep -x mpvpaper >/dev/null 2>&1 && echo true || echo false'")
+
+;; Nội dung ô tìm kiếm, người dùng gõ vào sẽ cập nhật biến này
+(defvar search "")
+
+;; Độ phân giải đang được chọn để phát wallpaper: 480p | 720p | 1080p | 4k
+;; Người dùng đổi qua bộ nút chọn độ phân giải trên panel. Mặc định 1080p.
+(defvar selected_resolution "1080p")
+
+;; -------------------- WIDGET: 1 THẺ WALLPAPER --------------------
+
+(defwidget wallpaper-card [wp]
+  (box :class "wallpaper-card"
+       :orientation "v"
+       :space-evenly false
+       :spacing 8
+       :halign "start"
+    (button :class "thumb-btn"
+            :onclick "scripts/apply_wallpaper.sh '${wp.path}' ${selected_resolution}"
+            :tooltip "${wp.name}"
+      (image :path "${wp.thumb}"
+             :image-width 190
+             :image-height 110
+             :class "thumb"))
+    (box :orientation "h"
+         :space-evenly false
+         :spacing 6
+      (label :class "wp-name"
+             :limit-width 18
+             :text "${wp.name}"
+             :halign "start"
+             :hexpand true)
+      (button :class "apply-btn"
+              :onclick "scripts/apply_wallpaper.sh '${wp.path}' ${selected_resolution}"
+        "Apply"))))
+
+;; -------------------- WIDGET: 1 HÀNG (2 THẺ) --------------------
+
+(defwidget wallpaper-row [row]
+  (box :orientation "h"
+       :space-evenly false
+       :spacing 16
+       :halign "start"
+    (for wp in row
+      (wallpaper-card :wp wp))))
+
+;; -------------------- WIDGET: LƯỚI TOÀN BỘ WALLPAPER --------------------
+;; Lọc theo ô tìm kiếm (không phân biệt hoa/thường) rồi chia thành
+;; từng nhóm 2 phần tử để hiển thị dạng lưới 2 cột.
+
+(defwidget wallpaper-grid []
+  (scroll :vscroll true
+          :hscroll false
+          :height 380
+    (box :class "grid-wrap"
+         :orientation "v"
+         :space-evenly false
+         :spacing 16
+      (for row in {jq(wallpapers,
+                        "[.[] | select(.name | ascii_downcase | contains(\"" + search + "\" | ascii_downcase))] as $arr | reduce range(0; ($arr|length); 2) as $i ([]; . + [$arr[$i:$i+2]])")}
+        (wallpaper-row :row row)))))
+
+;; -------------------- WIDGET: THANH TÌM KIẾM --------------------
+
+(defwidget search-bar []
+  (box :class "search-bar"
+       :orientation "h"
+       :space-evenly false
+       :spacing 10
+    (label :class "search-icon" :text "🔍")
+    (input :class "search-input"
+           :value search
+           :onchange "eww update search={}"
+           :timeout "150ms"
+           :hexpand true)))
+
+;; -------------------- WIDGET: BỘ CHỌN ĐỘ PHÂN GIẢI --------------------
+;; Cho phép giảm độ phân giải phát wallpaper để tiết kiệm CPU/GPU. Lựa
+;; chọn được truyền vào apply_wallpaper.sh mỗi khi bấm Apply/click thumbnail,
+;; và cũng được lưu lại để nút "Start Wallpaper" dùng đúng độ phân giải cũ.
+
+(defwidget resolution-btn [value label]
+  (button :class {selected_resolution == value ? "res-btn res-btn-active" : "res-btn"}
+          :onclick "eww update selected_resolution=${value}"
+    label))
+
+(defwidget resolution-selector []
+  (box :class "resolution-selector"
+       :orientation "h"
+       :space-evenly false
+       :spacing 8
+    (label :class "resolution-label" :text "Độ phân giải:")
+    (resolution-btn :value "480p" :label "480p")
+    (resolution-btn :value "720p" :label "720p")
+    (resolution-btn :value "1080p" :label "1080p")
+    (resolution-btn :value "2k" :label "2K")
+    (resolution-btn :value "4k" :label "4K")))
+
+;; -------------------- WIDGET: THANH NÚT PHÍA DƯỚI --------------------
+
+(defwidget action-bar []
+  (box :class "action-bar"
+       :orientation "h"
+       :space-evenly false
+       :spacing 12
+       :halign "end"
+    (button :class "btn btn-secondary"
+            :onclick "scripts/refresh.sh"
+      " Refresh")
+    (button :class {wallpaper_running == "true" ? "btn btn-danger" : "btn btn-start"}
+            :onclick "scripts/toggle_wallpaper.sh"
+      {wallpaper_running == "true" ? "⏹ Stop Wallpaper" : "▶ Start Wallpaper"})))
+
+;; -------------------- WIDGET: HIỂN THỊ WALLPAPER ĐANG DÙNG --------------------
+
+(defwidget current-bar []
+  (box :class "current-bar"
+       :orientation "h"
+       :space-evenly false
+       :spacing 8
+    (label :class "current-dot" :text "●")
+    (label :class "current-label" :text "Current:")
+    (label :class "current-name" :text "${current_wallpaper}" :limit-width 40)))
+
+;; -------------------- WIDGET GỐC --------------------
+
+(defwidget title-bar []
+  (box :class "title-bar"
+       :orientation "h"
+       :space-evenly false
+    (label :class "title" :text "󰸉  Live Wallpapers" :halign "start" :hexpand true)
+    (button :class "close-btn"
+            :onclick "eww close wallpaper-manager"
+            :tooltip "Đóng"
+      "✕")))
+
+(defwidget main []
+  (box :class "main-window"
+       :orientation "v"
+       :space-evenly false
+       :spacing 16
+    (title-bar)
+    (search-bar)
+    (resolution-selector)
+    (wallpaper-grid)
+    (current-bar)
+    (action-bar)))
+
+;; -------------------- WIDGET: NÚT SHORTCUT (TRIGGER ICON) --------------------
+;; Icon nhỏ, luôn hiện sẵn ở góc màn hình (giống icon mạng trên status bar).
+;; Bấm vào để mở/đóng panel wallpaper-manager.
+
+(defwidget trigger-icon []
+  (button :class "trigger-icon"
+          ;; Cố tình KHÔNG dùng "--toggle": mỗi lần bấm sẽ đóng (nếu đang mở)
+          ;; rồi mở lại ngay -> ép cấp lại keyboard focus cho ô tìm kiếm.
+          ;; Đây là cách khắc phục tình trạng ô tìm kiếm bị "đơ" sau khi bạn
+          ;; chuyển sang cửa sổ ứng dụng khác rồi quay lại (giới hạn của chế
+          ;; độ focus "on-demand" trên layer-shell). Muốn ĐÓNG panel, dùng
+          ;; nút ✕ trên panel thay vì bấm lại icon này.
+          :onclick "bash -c 'eww close wallpaper-manager 2>/dev/null; eww open wallpaper-manager'"
+          :tooltip "Live Wallpaper Manager (bấm lại nếu ô tìm kiếm bị đơ)"
+    (label :class "trigger-glyph" :text "LW")))
+
+;; -------------------- CỬA SỔ --------------------
+
+(defwindow wallpaper-manager
+  :monitor 0
+  :windowtype "normal"
+  :wm-ignore false
+  :focusable "true"
+  :namespace "livewallpaper"
+  :geometry (geometry :x "0"
+                       :y "0"
+                       :width "660px"
+                       :height "620px"
+                       :anchor "center")
+  :stacking "fg"
+  (main))
+
+;; Cửa sổ shortcut nhỏ, đặt cố định ở góc trên-phải màn hình, luôn hiện
+;; (không cần eww open thủ công mỗi lần) — mở kèm autostart, xem README.
+(defwindow wallpaper-trigger
+  :monitor 0
+  :windowtype "dock"
+  :wm-ignore true
+  :namespace "livewallpaper-trigger"
+  :geometry (geometry :x "12px"
+                       :y "12px"
+                       :width "40px"
+                       :height "28px"
+                       :anchor "top right")
+  :stacking "fg"
+  (trigger-icon))
