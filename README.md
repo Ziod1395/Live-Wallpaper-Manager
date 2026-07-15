@@ -41,8 +41,8 @@ yay -S mpvpaper
 ### Cài nhanh
 
 ```bash
-git clone https://github.com/<your-username>/live-wallpaper-manager.git
-cd live-wallpaper-manager
+git clone https://github.com/Ziod1395/Live-Wallpaper-Manager.git
+cd Live-Wallpaper-Manager
 bash install.sh
 ```
 
@@ -109,7 +109,7 @@ rm -f ~/.local/share/applications/live-wallpaper-manager.desktop
 
 MIT License
 
-Copyright (c) 2026 [Ziod1395]
+Copyright (c) 2026 Ziod1395
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
